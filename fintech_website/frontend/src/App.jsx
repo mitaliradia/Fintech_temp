@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
 import Register from "./pages/Register";
+import Pay from "./pages/pay";
 import "./index.css"; 
 
 
@@ -21,6 +22,8 @@ function App() {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route path="/pay" element={<Pay />} />
         </Routes>
       </main>
       <Footer />
