@@ -1,7 +1,10 @@
-import React from "react";
+import "../index.css";
 
-function ContactUs() {
-    return <h1>Contact Us Page</h1>;
+export default function ContactUs() {
+  return (
+    <div className="page-container">
+      <h1>Contact Us</h1>
+      <p>Email us at support@fintechx.com</p>
+    </div>
+  );
 }
-
-export default ContactUs; 
