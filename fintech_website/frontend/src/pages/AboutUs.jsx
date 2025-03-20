@@ -1,7 +1,10 @@
-import React from "react";
+import "../index.css";
 
-function AboutUs() {
-    return <h1>About Us Page</h1>;
+export default function AboutUs() {
+  return (
+    <div className="page-container">
+      <h1>About Us</h1>
+      <p>We are dedicated to providing seamless and secure financial solutions.</p>
+    </div>
+  );
 }
-
-export default AboutUs;  
