@@ -85,6 +85,168 @@
   background-color: #444;
 }
 
+/* Dashboard Styling */
+
+/* Dashboard Container */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card Styling */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Account Overview */
+.account-overview .overview-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.account-overview .overview-details div {
+  flex: 1;
+  text-align: center;
+}
+
+.account-overview h3 {
+  font-size: 1rem;
+  color: #666;
+}
+
+.account-overview p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #333;
+}
+
+/* Recent Transactions */
+.recent-transactions .transaction-graph {
+  margin-bottom: 20px;
+}
+
+.recent-transactions .graph-container {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+
+.recent-transactions ul {
+  list-style: none;
+}
+
+.recent-transactions li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.recent-transactions li span {
+  color: #999;
+}
+
+/* Investment Portfolio */
+.investment-portfolio .portfolio-graph {
+  margin-bottom: 20px;
+}
+
+.investment-portfolio .graph-container {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.investment-portfolio .portfolio-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.investment-portfolio .portfolio-details div {
+  flex: 1;
+  text-align: center;
+}
+
+.investment-portfolio h3 {
+  font-size: 1rem;
+  color: #666;
+}
+
+.investment-portfolio p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #333;
+}
+
+/* Budget & Savings */
+.budget-savings .budget-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.budget-savings .budget-details div {
+  flex: 1;
+  text-align: center;
+}
+
+.budget-savings h3 {
+  font-size: 1rem;
+  color: #666;
+}
+
+.budget-savings p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+
+  .account-overview .overview-details,
+  .investment-portfolio .portfolio-details,
+  .budget-savings .budget-details {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .recent-transactions .graph-container,
+  .investment-portfolio .graph-container {
+    height: 250px;
+  }
+}
+
 /* Footer */
 .footer {
   background-color: #ffffff;
