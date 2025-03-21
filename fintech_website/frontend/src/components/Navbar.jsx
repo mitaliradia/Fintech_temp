@@ -1,18 +1,24 @@
 import { Link } from "react-router-dom";
-import "../index.css"; // Import the CSS
+import { useAuth } from "../context/AuthContext"; // You'll need to create this
 
 export default function Navbar() {
+  const { isAuthenticated } = useAuth(); // Add authentication context
+
   return (
     <nav className="navbar">
-      <h1 className="logo">FinTechX</h1>
+      <h1 className="logo">EV Rentals</h1>
       <div>
         <Link to="/">Home</Link>
         <Link to="/aboutus">About Us</Link>
         <Link to="/contactus">Contact</Link>
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/pay">Pay</Link>
-        <Link to="/login">Login</Link>
-        
+        {isAuthenticated ? (
+          <>
+            <Link to="/activity">Activity</Link>
+            <Link to="/pay">Pay</Link>
+          </>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
       </div>
     </nav>
   );
