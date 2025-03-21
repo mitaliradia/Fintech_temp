@@ -1,5 +1,6 @@
 from app import db
-from datetime import datetime
+# from datetime import datetime
+import datetime
 import uuid
 
 class Vehicle(db.Model):
@@ -34,8 +35,8 @@ class Vehicle(db.Model):
     # maintenance_history = db.Column(db.JSON)  # Array of maintenance events
     image_urls = db.Column(db.JSON)  # Array of image URLs
     
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     # last_maintenance_date = db.Column(db.Date)
     # next_maintenance_date = db.Column(db.Date)
     total_rentals = db.Column(db.Integer, default=0)
@@ -72,8 +73,8 @@ class Station(db.Model):
     station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id'))
     # amenities = db.Column(db.JSON)  # Array of amenities available
     is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     
     # Relationships
     vehicles = db.relationship('Vehicle', backref='station', lazy=True)
