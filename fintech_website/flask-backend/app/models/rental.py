@@ -1,5 +1,6 @@
 from app import db
-from datetime import datetime
+# from datetime import datetime
+import datetime
 import uuid
 
 class Rental(db.Model):
@@ -11,7 +12,7 @@ class Rental(db.Model):
     pickup_station_id = db.Column(db.String(36), db.ForeignKey('stations.id'), nullable=False)
     return_station_id = db.Column(db.String(36), db.ForeignKey('stations.id'), nullable=False)
     
-    booking_date = db.Column(db.DateTime, default=datetime.utcnow)
+    booking_date = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     actual_start_date = db.Column(db.DateTime)
@@ -43,8 +44,8 @@ class Rental(db.Model):
     
     loyalty_points_earned = db.Column(db.Integer, default=0)
     
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     notes = db.Column(db.Text)
     tracking_data = db.Column(db.JSON)  # Array of tracking data points
     
