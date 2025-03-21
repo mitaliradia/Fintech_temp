@@ -1,12 +1,14 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash
-from datetime import datetime, date
+# from datetime import datetime, date
 from ..models.user import db, User
 import uuid
 import re
 import jwt
 import os
-from datetime import datetime, timedelta
+# from datetime import timedelta
+import datetime
+#  datetime
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -41,7 +43,7 @@ def register():
     dob = None
     if 'date_of_birth' in data and data['date_of_birth']:
         try:
-            dob = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+            dob = datetime.datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
         except ValueError:
             return jsonify({'success': False, 'message': 'Invalid date format for date_of_birth. Use YYYY-MM-DD'}), 400
     
@@ -62,8 +64,8 @@ def register():
         country=data.get('country'),
         preferred_language=data.get('preferred_language', 'en'),
         marketing_consent=data.get('marketing_consent', False),
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.datetime.now(datetime.timezone.utc),
+        updated_at=datetime.datetime.now(datetime.timezone.utc)
     )
     
     # Save to database
@@ -75,7 +77,7 @@ def register():
         token_payload = {
             'user_id': str(new_user.id),
             'email': new_user.email,
-            'exp': datetime.utcnow() + timedelta(days=1)  # Token expires in 1 day
+            'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1)  # Token expires in 1 day
         }
         
         token = jwt.encode(
