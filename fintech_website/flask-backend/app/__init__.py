@@ -36,6 +36,7 @@ def create_app():
     from app.routes.station import station_bp
     from app.routes.vehicle import vehicle_bp
     from app.routes.rental import rental_bp
+    from app.routes.kyc import kyc_bp
 
     from app.routes.test import test_bp
     app.register_blueprint(test_bp, url_prefix='/test')
@@ -45,6 +46,7 @@ def create_app():
     app.register_blueprint(station_bp, url_prefix="/api/station")
     app.register_blueprint(vehicle_bp, url_prefix="/api/vehicle")
     app.register_blueprint(rental_bp, url_prefix="/api/rentals")
+    app.register_blueprint(kyc_bp, url_prefix="/api/kyc")
     
     # Import all models before creating tables
     from app.models.user import User
