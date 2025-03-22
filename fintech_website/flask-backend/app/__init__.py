@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 import os
+from datetime import timedelta
 from app.models import db
 
 def create_app():
@@ -11,7 +13,14 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance/fintech.db")}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
+    # JWT Configuration
+    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your-secret-key-for-development')
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
+    
+    # Initialize extensions
     db.init_app(app)
+    jwt = JWTManager(app)
     
     # Import and register blueprints
     from app.routes.pay import pay_bp
