@@ -1,13 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import "../index.css";
 import bike1 from "../images/bike1.jpg";
 import bike2 from "../images/bike2.jpg";
 
 const Home = () => {
+  const navigate = useNavigate(); // Add this hook
   const [selectedStation, setSelectedStation] = useState("");
   const [showBikes, setShowBikes] = useState(false);
+  const [userRole, setUserRole] = useState("stationMaster"); // Default to station master view
+
+  // Toggle between user and station master views
+  const toggleRole = () => {
+    setUserRole(userRole === "user" ? "stationMaster" : "user");
+  };
 
   useEffect(() => {
     const processSteps = document.querySelectorAll(".process-step");
@@ -140,6 +148,10 @@ const Home = () => {
     setShowBikes(true);
   };
 
+  const handleStartNow = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="home-container">
       {/* Hero Section */}
@@ -178,12 +190,13 @@ const Home = () => {
           <div className="bikes-container">
             {availableBikes[selectedStation].map((bike) => (
               <div className="bike-card" key={bike.id}>
-                <img 
+                <img
                   src={bike.image}
                   alt={bike.name}
                   onError={(e) => {
                     console.error(`Failed to load image for ${bike.name}`);
-                    e.target.src = "https://via.placeholder.com/200x200?text=Bike+Image";
+                    e.target.src =
+                      "https://via.placeholder.com/200x200?text=Bike+Image";
                   }}
                 />
                 <h3>{bike.name}</h3>
@@ -354,7 +367,9 @@ const Home = () => {
           </div>
         </div>
 
-        <button className="start-now-btn">Start Now</button>
+        <button className="start-now-btn" onClick={handleStartNow}>
+          Start Now
+        </button>
       </section>
     </div>
   );
