@@ -45,6 +45,9 @@ def create_app():
     
     with app.app_context():
         db.create_all()
+
+    # from app.routes.vehicle import vehicle_bp
+    # app.register_blueprint(vehicle_bp)
         
     @app.route("/")
     def home():
