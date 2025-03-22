@@ -8,6 +8,12 @@ import bike2 from "../images/bike2.jpg";
 const Home = () => {
   const [selectedStation, setSelectedStation] = useState("");
   const [showBikes, setShowBikes] = useState(false);
+  const [userRole, setUserRole] = useState("stationMaster") // Default to station master view
+
+  // Toggle between user and station master views
+  const toggleRole = () => {
+    setUserRole(userRole === "user" ? "stationMaster" : "user")
+  }
 
   useEffect(() => {
     const processSteps = document.querySelectorAll(".process-step");
