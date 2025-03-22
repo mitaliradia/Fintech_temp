@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 # from datetime import datetime, date
 from ..models.user import db, User
+from ..models.admin import Admin, RoleEnum
 import uuid
 import re
 import jwt
@@ -9,6 +10,8 @@ import os
 # from datetime import timedelta
 import datetime
 #  datetime
+
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -195,6 +198,87 @@ def refresh_token():
         return jsonify({'success': False, 'message': 'Refresh token expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'success': False, 'message': 'Invalid refresh token'}), 401
+
+
+# Admin Registration
+@auth_bp.route("/admin/register", methods=["POST"])
+def register_admin():
+    data = request.get_json()
+    
+    # Extract details
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    email = data.get("email")
+    phone_number = data.get("phone_number")
+    password = data.get("password")
+    role = data.get("role", "SUPPORT_STAFF")  # Default to SUPPORT_STAFF
+    station_id = data.get("station_id")
+    
+    # Check if email already exists
+    if Admin.query.filter_by(email=email).first():
+        return jsonify({"error": "Admin with this email already exists"}), 400
+
+    # Validate role
+    if role not in RoleEnum.__members__:
+        return jsonify({"error": "Invalid role"}), 400
+    
+    # Hash the password
+    hashed_password = generate_password_hash(password)
+
+    # Create new admin
+    new_admin = Admin(
+        id=uuid.uuid4(),
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        phone_number=phone_number,
+        password_hash=hashed_password,
+        role=RoleEnum[role],
+        station_id=station_id,
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
+    )
+    
+    db.session.add(new_admin)
+    db.session.commit()
+
+    return jsonify({"message": "Admin registered successfully", "admin_id": str(new_admin.id)}), 201
+
+
+# Admin Login
+@auth_bp.route("/admin/login", methods=["POST"])
+def login_admin():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+    # Find admin by email
+    admin = Admin.query.filter_by(email=email).first()
+
+    if not admin or not check_password_hash(admin.password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+    
+    # Generate JWT tokens
+    access_token = create_access_token(identity=str(admin.id), additional_claims={"role": admin.role.value})
+    refresh_token = create_refresh_token(identity=str(admin.id))
+
+    return jsonify({
+        "message": "Login successful",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "admin": {
+            "id": str(admin.id),
+            "email": admin.email,
+            "role": admin.role.value
+        }
+    }), 200
+
+
+@auth_bp.route("/admin/logout", methods=["POST"])
+@jwt_required()
+def logout_admin():
+    # Implement token blacklist logic here (Redis or DB storage)
+    return jsonify({"message": "Admin logged out successfully"}), 200
 
 # Add to your main app.py file:
 # from routes.auth import auth_bp
