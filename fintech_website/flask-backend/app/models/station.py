@@ -4,7 +4,7 @@ import uuid
 
 class Station(db.Model):
     __tablename__ = 'stations'
-    # __table_args__ = {'extend_existing': True} 
+    __table_args__ = {'extend_existing': True}
     
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(100), nullable=False)
@@ -32,15 +32,13 @@ class Station(db.Model):
     available_spots = db.Column(db.Integer)  # Currently available spots
     charging_stations = db.Column(db.Integer)  # Number of charging points
     
-    # Relationships
-    station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id', deferrable=True))  # Admin in charge of this station
-    # amenities = db.Column(db.JSON)  # List of available amenities
+    # Relationships - Note we're removing the bidirectional relationship that was causing problems
+    station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id', deferrable=True))
     
     # Status and Metadata
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relationship with Admin
-    station_master = db.relationship('Admin', backref='managed_station', lazy=True, foreign_keys="[Station.station_master_id]")
-
+    def __repr__(self):
+        return f"<Station {self.name}>"
