@@ -11,7 +11,7 @@ import os
 import datetime
 #  datetime
 
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, jwt_required, get_jwt
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
