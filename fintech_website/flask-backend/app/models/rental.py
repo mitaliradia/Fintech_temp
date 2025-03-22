@@ -39,8 +39,8 @@ class Rental(db.Model):
     tax_amount = db.Column(db.Float, default=0)
     
     payment_status = db.Column(db.String(20), default='PENDING')  # PENDING, AUTHORIZED, PAID, REFUNDED, DISPUTED, FAILED
-    payment_id = db.Column(db.String(36), db.ForeignKey('payments.id'))
-    pre_authorization_id = db.Column(db.String(36), db.ForeignKey('payment_authorizations.id'))
+    payment_id = db.Column(db.String(36))  # Remove ForeignKey
+    pre_authorization_id = db.Column(db.String(36))
     
     loyalty_points_earned = db.Column(db.Integer, default=0)
     
