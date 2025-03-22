@@ -51,6 +51,33 @@
   color: #007bff;
 }
 
+/* Add these styles for the role toggle button */
+.role-toggle {
+  position: fixed;
+  top: 80px; /* Matches navbar height */
+  right: 20px;
+  z-index: 999;
+  padding: 10px;
+}
+
+.toggle-btn {
+  background: white;
+  color: black;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(65, 88, 208, 0.3);
+}
+
+.toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(65, 88, 208, 0.4);
+}
+
 /* Page Containers */
 .page-container {
   padding-top: 100px; /* Offset for fixed navbar */
@@ -396,7 +423,7 @@ section {
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("/placeholder.svg?height=600&width=1200");
+  background: linear-gradient(rgba(11, 230, 233, 0.945), rgba(16, 1, 1, 0.814)), url("/placeholder.svg?height=600&width=1200");
   background-size: cover;
   background-position: center;
   color: var(--white);

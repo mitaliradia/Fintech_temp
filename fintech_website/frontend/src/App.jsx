@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from 'react';
+import { useState } from "react";
 import Home from "./pages/Home";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
@@ -12,7 +12,7 @@ import Pay from "./pages/pay";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
 import Activity from "./pages/Activity";
-import StationMasterDashboard from './pages/Master_Dashboard';
+import StationMasterDashboard from "./pages/Master_Dashboard";
 
 const App = () => {
   const [userRole, setUserRole] = useState("user"); // Default to user view
@@ -30,7 +30,9 @@ const App = () => {
             Switch to {userRole === "user" ? "Station Master" : "User"} View
           </button>
         </div>
-        <main>
+        <main style={{ marginTop: "80px" }}>
+          {" "}
+          {/* Add margin to prevent content from hiding under navbar */}
           {userRole === "user" ? (
             <Routes>
               <Route path="/" element={<Home />} />
