@@ -44,37 +44,5 @@ class Vehicle(db.Model):
     min_loyalty_tier = db.Column(db.String(20), default='BASIC')  # BASIC, SILVER, GOLD, PLATINUM
     
     # Relationships
-    rentals = db.relationship('Rental', backref='vehicle', lazy=True)
+    # rentals = db.relationship('Rental', backref='vehicle', lazy=True)
 
-class Station(db.Model):
-    __tablename__ = 'stations'
-    
-    id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
-    name = db.Column(db.String(100), nullable=False)
-    
-    # Address
-    street = db.Column(db.String(100))
-    city = db.Column(db.String(50))
-    state = db.Column(db.String(50))
-    zip_code = db.Column(db.String(20))
-    country = db.Column(db.String(50))
-    
-    # Location
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    
-    contact_phone = db.Column(db.String(20))
-    contact_email = db.Column(db.String(120))
-    operating_hours = db.Column(db.JSON)  # Operating hours for each day
-    capacity = db.Column(db.Integer)  # Total parking spots
-    available_spots = db.Column(db.Integer)  # Currently available spots
-    charging_stations = db.Column(db.Integer)  # Number of charging points
-    
-    station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id'))
-    # amenities = db.Column(db.JSON)  # Array of amenities available
-    is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
-    
-    # Relationships
-    vehicles = db.relationship('Vehicle', backref='station', lazy=True)

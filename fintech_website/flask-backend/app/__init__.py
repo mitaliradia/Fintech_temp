@@ -33,15 +33,25 @@ def create_app():
     # Import and register blueprints
     from app.routes.pay import pay_bp
     from app.routes.auth import auth_bp
+    from app.routes.station import station_bp
+    from app.routes.vehicle import vehicle_bp
+    from app.routes.rental import rental_bp
+
+    from app.routes.test import test_bp
+    app.register_blueprint(test_bp, url_prefix='/test')
+    
     app.register_blueprint(pay_bp, url_prefix="/pay")
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(station_bp, url_prefix="/api/station")
+    app.register_blueprint(vehicle_bp, url_prefix="/api/vehicle")
+    app.register_blueprint(rental_bp, url_prefix="/api/rentals")
     
     # Import all models before creating tables
     from app.models.user import User
     from app.models.station import Station  # Import Station first
     from app.models.admin import Admin      # Then import Admin
-    # from app.models.rental import Rental
-    # from app.models.vehicle import Vehicle
+    from app.models.vehicle import Vehicle
+    from app.models.rental import Rental
     
     with app.app_context():
         db.create_all()

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import "../index.css";
+import bike1 from "../images/bike1.jpg";
+import bike2 from "../images/bike2.jpg";
 
 const Home = () => {
   const [selectedStation, setSelectedStation] = useState("");
@@ -50,21 +52,21 @@ const Home = () => {
         name: "Urban Cruiser",
         rate: 12,
         battery: 500,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
       {
         id: 2,
         name: "City Explorer",
         rate: 15,
         battery: 650,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike2,
       },
       {
         id: 3,
         name: "Metro Glider",
         rate: 10,
         battery: 450,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
     ],
     "Riverside Park": [
@@ -73,14 +75,14 @@ const Home = () => {
         name: "Trail Blazer",
         rate: 18,
         battery: 700,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike2,
       },
       {
         id: 5,
         name: "Nature Rider",
         rate: 14,
         battery: 550,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
     ],
     "Central Square": [
@@ -89,14 +91,14 @@ const Home = () => {
         name: "Urban Commuter",
         rate: 11,
         battery: 480,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike2,
       },
       {
         id: 7,
         name: "City Hopper",
         rate: 13,
         battery: 520,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
     ],
     "University Campus": [
@@ -105,14 +107,14 @@ const Home = () => {
         name: "Campus Cruiser",
         rate: 9,
         battery: 420,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike2,
       },
       {
         id: 9,
         name: "Student Speeder",
         rate: 10,
         battery: 450,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
     ],
     "Beach Boulevard": [
@@ -121,14 +123,14 @@ const Home = () => {
         name: "Coastal Glider",
         rate: 16,
         battery: 600,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike2,
       },
       {
         id: 11,
         name: "Beach Rover",
         rate: 17,
         battery: 650,
-        image: "/placeholder.svg?height=150&width=250",
+        image: bike1,
       },
     ],
   };
@@ -176,7 +178,14 @@ const Home = () => {
           <div className="bikes-container">
             {availableBikes[selectedStation].map((bike) => (
               <div className="bike-card" key={bike.id}>
-                <img src={bike.image || "/placeholder.svg"} alt={bike.name} />
+                <img 
+                  src={bike.image}
+                  alt={bike.name}
+                  onError={(e) => {
+                    console.error(`Failed to load image for ${bike.name}`);
+                    e.target.src = "https://via.placeholder.com/200x200?text=Bike+Image";
+                  }}
+                />
                 <h3>{bike.name}</h3>
                 <div className="bike-details">
                   <p>
