@@ -21,6 +21,13 @@ def create_app():
     app.register_blueprint(pay_bp, url_prefix="/pay")
     app.register_blueprint(auth_bp)
 
+    # from app.models.admin import Admin
+    # from app.models.station import Station
+    from app.models.user import User
+    # from app.models.rental import Rental
+    # from app.models.vehicle import Vehicle
+    # from app.models import *
+
     with app.app_context():
         db.create_all()
 

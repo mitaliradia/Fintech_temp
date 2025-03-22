@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, ARRAY, Enum as SQLAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from app import db
+from app.models import db
 
 class RoleEnum(Enum):
     SUPER_ADMIN = "SUPER_ADMIN"
@@ -15,6 +15,7 @@ class RoleEnum(Enum):
 
 class Admin(db.Model):
     __tablename__ = "admins"
+    __table_args__ = {'extend_existing': True} 
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String(100), nullable=False)
@@ -23,7 +24,7 @@ class Admin(db.Model):
     phone_number = Column(String(20), unique=True, nullable=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(SQLAEnum(RoleEnum), nullable=False)
-    station_id = Column(UUID(as_uuid=True), ForeignKey("stations.id"), nullable=True)
+    station_id = Column(UUID(as_uuid=True), ForeignKey("stations.id", deferrable=True), nullable=True)
     permissions = Column(ARRAY(String), default=[])
     last_login_at = Column(DateTime, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)

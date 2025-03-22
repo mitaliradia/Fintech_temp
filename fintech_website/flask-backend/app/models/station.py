@@ -1,9 +1,10 @@
-from app import db
+from app.models import db
 from datetime import datetime
 import uuid
 
 class Station(db.Model):
     __tablename__ = 'stations'
+    # __table_args__ = {'extend_existing': True} 
     
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(100), nullable=False)
@@ -32,8 +33,8 @@ class Station(db.Model):
     charging_stations = db.Column(db.Integer)  # Number of charging points
     
     # Relationships
-    station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id'))  # Admin in charge of this station
-    amenities = db.Column(db.JSON)  # List of available amenities
+    station_master_id = db.Column(db.String(36), db.ForeignKey('admins.id', deferrable=True))  # Admin in charge of this station
+    # amenities = db.Column(db.JSON)  # List of available amenities
     
     # Status and Metadata
     is_active = db.Column(db.Boolean, default=True)
@@ -41,5 +42,5 @@ class Station(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationship with Admin
-    station_master = db.relationship('Admin', backref='managed_station', lazy=True)
+    station_master = db.relationship('Admin', backref='managed_station', lazy=True, foreign_keys="[Station.station_master_id]")
 
