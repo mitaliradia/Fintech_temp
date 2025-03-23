@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "../index.css"
+import { stationAPI } from "../services/api";
 
 const Master_Dashboard = () => {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [showNotification, setShowNotification] = useState(false)
-  const [selectedEV, setSelectedEV] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-  // Station master data
-  const stationData = {
+  const [stationData, setStationData] = useState({
     stationName: "Downtown Station",
     stationId: "ST-001",
     location: "123 Main Street, Downtown",
@@ -19,7 +19,109 @@ const Master_Dashboard = () => {
     availableEVs: 5,
     bookedEVs: 6,
     maintenanceEVs: 1,
-  }
+  });
+  
+  const [activeTab, setActiveTab] = useState("overview")
+  const [showNotification, setShowNotification] = useState(false)
+  const [selectedEV, setSelectedEV] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Station master data - with useState
+  // Near the top of your component, add this state:
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Get station data
+        const stationResponse = await stationAPI.getStations();
+        if (!stationResponse.data?.success || !stationResponse.data?.stations?.length) {
+          return;
+        }
+        
+        const station = stationResponse.data.stations[0];
+        
+        // Format and update basic station info
+        const addressParts = [];
+        if (station.address?.street) addressParts.push(station.address.street);
+        if (station.address?.city) addressParts.push(station.address.city);
+        if (station.address?.state) addressParts.push(station.address.state);
+        const locationString = addressParts.length > 0 ? addressParts.join(', ') : 'No address provided';
+        
+        // Update station data
+        setStationData(prev => ({
+          ...prev,
+          stationName: station.name || prev.stationName,
+          stationId: station.id || prev.stationId,
+          location: locationString,
+          totalEVs: station.capacity || prev.totalEVs,
+          availableEVs: station.available_spots || prev.availableEVs,
+          bookedEVs: 0,  // Or fetch from a bookings API
+          maintenanceEVs: 0  // Or fetch from a maintenance API
+        }));
+        
+        // Try to fetch recent bookings if you have an endpoint
+        try {
+          // This is a placeholder - replace with your actual API call
+          const bookingsResponse = await stationAPI.getRecentBookings(station.id);
+          if (bookingsResponse.data?.success && bookingsResponse.data?.bookings) {
+            setBookedEVs(bookingsResponse.data.bookings);
+          }
+        } catch (bookingErr) {
+          console.error("Error fetching bookings:", bookingErr);
+          // Keep the default bookedEVs data
+        }
+        
+        // For battery status, you would need vehicle data with battery levels
+        // This might be available from the same bookings API or a separate vehicles API
+
+        let totalEVs = 0;
+      let availableEVs = 0;
+      let bookedEVs = 0;
+      let maintenanceEVs = 0;
+      
+      if (vehicleResponse.data?.success && vehicleResponse.data?.vehicles) {
+        const vehicles = vehicleResponse.data.vehicles;
+        totalEVs = vehicles.length;
+        
+        // Count vehicles by status
+        vehicles.forEach(vehicle => {
+          if (vehicle.status === 'AVAILABLE') availableEVs++;
+          else if (vehicle.status === 'RENTED') bookedEVs++;
+          else if (vehicle.status === 'MAINTENANCE') maintenanceEVs++;
+        });
+      } else {
+        // If vehicle data isn't available, use station capacity data
+        totalEVs = station.capacity || 12;
+        availableEVs = station.available_spots || totalEVs;
+        bookedEVs = 0;
+        maintenanceEVs = 0;
+      }
+      
+      // Update the state with all new data
+      setStationData({
+        stationName: station.name || "Station",
+        stationId: station.id || "ST-000",
+        location: locationString,
+        totalEVs,
+        availableEVs,
+        bookedEVs,
+        maintenanceEVs
+      });
+
+        
+      } catch (err) {
+        console.error("Error fetching data", err);
+      }
+    }
+    
+    fetchData();
+  }, []);
 
   // Available EVs data
   const availableEVs = [
@@ -195,8 +297,52 @@ const Master_Dashboard = () => {
     return "battery-low"
   }
 
+  // Loading state with styled container
+  // if (loading) {
+  //   return (
+  //     <div className="loading-container" style={{ 
+  //       display: 'flex', 
+  //       flexDirection: 'column', 
+  //       alignItems: 'center', 
+  //       justifyContent: 'center', 
+  //       height: '100vh',
+  //       padding: '20px'
+  //     }}>
+  //       <div className="loading-spinner" style={{
+  //         border: '4px solid #f3f3f3',
+  //         borderTop: '4px solid #3498db',
+  //         borderRadius: '50%',
+  //         width: '50px',
+  //         height: '50px',
+  //         animation: 'spin 2s linear infinite'
+  //       }}></div>
+  //       <p style={{ marginTop: '20px' }}>Loading station data...</p>
+  //       <style>{`
+  //         @keyframes spin {
+  //           0% { transform: rotate(0deg); }
+  //           100% { transform: rotate(360deg); }
+  //         }
+  //       `}</style>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="station-master-dashboard">
+      {/* Error notification if we have an error but are using default data */}
+      {error && (
+        <div style={{ 
+          backgroundColor: '#ffecb3', 
+          color: '#664d03', 
+          padding: '10px 20px', 
+          borderRadius: '4px', 
+          margin: '10px 0',
+          border: '1px solid #ffc107'
+        }}>
+          <p><strong>Note:</strong> {error}</p>
+        </div>
+      )}
+
       {/* Header */}
       <header className="dashboard-header animate-in">
         <div className="header-left">
@@ -233,6 +379,21 @@ const Master_Dashboard = () => {
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
           </div>
+          {/* <button 
+            className="logout-button" 
+            onClick={handleLogout}
+            style={{
+              backgroundColor: '#f44336',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginLeft: '10px'
+            }}
+          >
+            Logout
+          </button> */}
         </div>
       </header>
 
@@ -654,7 +815,7 @@ const Master_Dashboard = () => {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    >
+                      >
                       <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
                       <line x1="12" y1="8" x2="12" y2="12"></line>
                       <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -677,4 +838,3 @@ const Master_Dashboard = () => {
 }
 
 export default Master_Dashboard
-

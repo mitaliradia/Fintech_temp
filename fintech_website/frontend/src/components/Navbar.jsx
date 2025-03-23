@@ -1,33 +1,36 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, userRole, logout } = useAuth();
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
       if (window.innerWidth > 992) {
         setMenuOpen(false);
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const styles = {
     navbar: {
@@ -130,8 +133,23 @@ export default function Navbar() {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
       zIndex: 998,
     },
+    logoutButton: {
+      backgroundColor: '#f44336',
+      color: 'white',
+      border: 'none',
+      padding: '8px 16px',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontFamily: "'Poppins', sans-serif",
+      fontSize: windowWidth <= 768 ? "0.9rem" : "1rem",
+      fontWeight: 500,
+      transition: "background-color 0.3s ease",
+      margin: windowWidth <= 992 ? "0.8rem auto" : "0 0 0 1rem",
+      display: "block",
+      width: windowWidth <= 992 ? "80%" : "auto",
+    }
   };
-
+  
   const handleNavLinkHover = (e, isHovering) => {
     const underline = e.currentTarget.querySelector(".link-underline");
     if (underline) {
@@ -139,7 +157,7 @@ export default function Navbar() {
     }
     e.currentTarget.style.color = isHovering ? "#4158D0" : "#333333";
   };
-
+  
   return (
     <>
       <nav style={styles.navbar}>
@@ -147,7 +165,6 @@ export default function Navbar() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <h1 style={styles.logoText}>EV Rentals</h1>
           </Link>
-
           <div style={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)}>
             <div
               style={{
@@ -170,7 +187,6 @@ export default function Navbar() {
               }}
             ></div>
           </div>
-
           <ul style={styles.navLinks}>
             <li style={styles.navItem}>
               <Link
@@ -214,35 +230,86 @@ export default function Navbar() {
                 ></span>
               </Link>
             </li>
+            
             {isAuthenticated ? (
               <>
+                {/* Show dashboard based on user role */}
                 <li style={styles.navItem}>
                   <Link
-                    to="/activity"
+                    to={userRole === "admin" ? "/admin/dashboard" : "/dashboard"}
                     style={styles.navLink}
                     onMouseEnter={(e) => handleNavLinkHover(e, true)}
                     onMouseLeave={(e) => handleNavLinkHover(e, false)}
                   >
-                    Activity
+                    Dashboard
                     <span
                       className="link-underline"
                       style={styles.linkUnderline}
                     ></span>
                   </Link>
                 </li>
+
+                {isAuthenticated && userRole === "admin" && (
+                  <li style={styles.navItem}>
+                    <Link
+                      to="/admin/stations"
+                      style={styles.navLink}
+                      onMouseEnter={(e) => handleNavLinkHover(e, true)}
+                      onMouseLeave={(e) => handleNavLinkHover(e, false)}
+                    >
+                      Manage Stations
+                      <span
+                        className="link-underline"
+                        style={styles.linkUnderline}
+                      ></span>
+                    </Link>
+                  </li>
+                )}
+                
+                {/* Only show these links for regular users */}
+                {userRole !== "admin" && (
+                  <>
+                    <li style={styles.navItem}>
+                      <Link
+                        to="/activity"
+                        style={styles.navLink}
+                        onMouseEnter={(e) => handleNavLinkHover(e, true)}
+                        onMouseLeave={(e) => handleNavLinkHover(e, false)}
+                      >
+                        Activity
+                        <span
+                          className="link-underline"
+                          style={styles.linkUnderline}
+                        ></span>
+                      </Link>
+                    </li>
+                    <li style={styles.navItem}>
+                      <Link
+                        to="/pay"
+                        style={styles.navLink}
+                        onMouseEnter={(e) => handleNavLinkHover(e, true)}
+                        onMouseLeave={(e) => handleNavLinkHover(e, false)}
+                      >
+                        Pay
+                        <span
+                          className="link-underline"
+                          style={styles.linkUnderline}
+                        ></span>
+                      </Link>
+                    </li>
+                  </>
+                )}
+                
+                {/* Logout button */}
                 <li style={styles.navItem}>
-                  <Link
-                    to="/pay"
-                    style={styles.navLink}
-                    onMouseEnter={(e) => handleNavLinkHover(e, true)}
-                    onMouseLeave={(e) => handleNavLinkHover(e, false)}
+                  <button 
+                    onClick={handleLogout} 
+                    style={styles.logoutButton}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#d32f2f'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#f44336'}
                   >
-                    Pay
-                    <span
-                      className="link-underline"
-                      style={styles.linkUnderline}
-                    ></span>
-                  </Link>
+                    Logout
+                  </button>
                 </li>
               </>
             ) : (

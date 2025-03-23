@@ -6,27 +6,40 @@ import "../index.css";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, adminLogin, error, setError } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
-
-    const result = await login(email, password);
-    if (result.success) {
-      navigate("/dashboard");
+    
+    let result;
+    if (isAdmin) {
+      result = await adminLogin(email, password);
+      if (result.success) {
+        navigate("/admin/dashboard");  // This should match the route in App.jsx
+      }
     } else {
-      setError(result.error);
+      result = await login(email, password);
+      if (result.success) {
+        navigate("/activity");  // Updated to go to dashboard instead of home
+      }
     }
+    
+    setLoading(false);
   };
 
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Login</h2>
+        <h2>{isAdmin ? "Admin Login" : "Login"}</h2>
+        
         {error && <div className="error-message">{error}</div>}
+        
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Email</label>
@@ -38,6 +51,7 @@ export default function Login() {
               required
             />
           </div>
+          
           <div className="input-group">
             <label>Password</label>
             <input
@@ -48,17 +62,35 @@ export default function Login() {
               required
             />
           </div>
-          <button className="login-btn" type="submit">
-            Login
+          
+          <div className="input-group checkbox-group">
+            <input
+              type="checkbox"
+              id="admin-login"
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
+            <label htmlFor="admin-login">Login as Admin</label>
+          </div>
+          
+          <button 
+            className="login-btn" 
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="register-link">
-          Don't have an account?
-          <span className="link-text" onClick={() => navigate("/register")}>
-            {" "}
-            Register
-          </span>
-        </p>
+        
+        {!isAdmin && (
+          <p className="register-link">
+            Don't have an account?
+            <span className="link-text" onClick={() => navigate("/register")}>
+              {" "}
+              Register
+            </span>
+          </p>
+        )}
       </div>
     </div>
   );
