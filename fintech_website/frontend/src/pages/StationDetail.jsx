@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { stationAPI } from '../services/stationService';
+// import { stationAPI } from '../services/stationService';
 import { useAuth } from '../context/AuthContext';
 
 const StationDetail = () => {
