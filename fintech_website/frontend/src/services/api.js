@@ -2,7 +2,9 @@
 import axios from 'axios';
 
 // Base URL for your API - empty string for proxy to work
-const API_URL = 'http://127.0.0.1:5000';
+// const API_URL = 'http://127.0.0.1:5000';
+// for deployment
+const API_URL = 'https://fintech-backend-dj0j.onrender.com';
 
 // Create axios instance
 const api = axios.create({
