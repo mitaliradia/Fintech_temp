@@ -10,7 +10,8 @@ def create_app():
     
     # Setup CORS with more specific configuration
     CORS(app, 
-     resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}}, 
+     resources={r"/*": {"origins": ['https://fintech-temp.onrender.com']}},
+    #  ["http://localhost:5173", "http://127.0.0.1:5173"] 
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
@@ -83,11 +84,9 @@ def create_app():
     from app.routes.station import station_bp
     from app.routes.vehicle import vehicle_bp
     from app.routes.rental import rental_bp
-<<<<<<< HEAD
+
     from app.routes.kyc import kyc_bp
 
-=======
->>>>>>> f76d352 (push for deployment)
     from app.routes.test import test_bp
     
     app.register_blueprint(test_bp, url_prefix='/test')
@@ -107,14 +106,7 @@ def create_app():
     
     with app.app_context():
         db.create_all()
-<<<<<<< HEAD
 
-    # from app.routes.vehicle import vehicle_bp
-    # app.register_blueprint(vehicle_bp)
-        
-=======
-    
->>>>>>> f76d352 (push for deployment)
     @app.route("/")
     def home():
         return "Hello, Babes!"
